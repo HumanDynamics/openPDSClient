@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_relative_url">/account/login</string>
+    <string name="signup_relative_url">/account/signup</string>
+    <string name="registry_url">http://linkedpersonaldata.org</string>
+    <string name="clients_relative_url">/account/clients</string>
+    <string name="token_relative_url">/oauth2/token/</string>
+    <string name="userinfo_relative_url">/oauth2/userinfo</string>
+    <string name="radial_relative_url">/visualization/socialHealthRadial</string>
+    <string name="sharing_relative_url">/sharing/edit/</string>
+    <string name="activity_relative_url">/visualization/activity/</string>
+    <string name="social_relative_url">/visualization/social/</string>
+    <string name="focus_relative_url">/visualization/focus/</string>
+    <string name="notification_api_relative_url">/api/personal_data/notification/</string>
+    <string name="places_relative_url">/visualization/places/</string>
+    <string name="device_api_relative_url">/api/personal_data/device/</string>
+    
+</resources>

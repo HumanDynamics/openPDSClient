@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>    
+    <string name="prefs_file">TokenPrefs</string>
+    <string name="access_token_prefs_key">accessToken</string>
+    <string name="refresh_token_prefs_key">refreshToken</string>
+    <string name="token_expiration_time_prefs_key">tokenExpirationTime</string>
+    <string name="password_prefs_key">password</string>
+</resources>
