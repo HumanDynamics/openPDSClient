@@ -15,9 +15,9 @@ Getting Started (assuming Eclipse with ADT as a development environment):
 
 2) Add openPDSClient as a project reference in your application. This is done by right-clicking your project, selecting properties from the context menu and performing the following steps:
 
-a) In "Java Build Path", click on the "Projects" tab, click the "Add..." button and select openPDSClient from the list. Then, from the "Order and Export" tab, check the box next to openPDSClient".  
-b) In "Project References", check the box next to openPDSClient. 
-c) In "Android", click the "Add..." button under the "Library" heading, and select openPDSClient from the list. 
+    a) In "Java Build Path", click on the "Projects" tab, click the "Add..." button and select openPDSClient from the list. Then, from the "Order and Export" tab, check the box next to openPDSClient".  
+    b) In "Project References", check the box next to openPDSClient. 
+    c) In "Android", click the "Add..." button under the "Library" heading, and select openPDSClient from the list. 
 
 3) For funf integration, you'll need to update your Pipeline config to use "edu.mit.media.openpds.client.funf.OpenPDSPipeline" as the type, and this config must be included as meta-data on the FunfManager service in your Android Manifest. After doing this, and adding entries for the openPDS/Funf launcher receiver and upload service, your application manifest should have the following entries (in place of the traditional Funf equivalents):
 
