@@ -3,6 +3,7 @@ package edu.mit.media.openpds.client;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,7 +25,7 @@ public class UserInfoTask extends AsyncTask<String, Void, Boolean>  {
 	@Override
 	protected Boolean doInBackground(String... params) {
 		if (params.length != 1) {
-			throw new IllegalArgumentException("UserInfoTask requires a RegistryConfig as a parameter.");
+			throw new IllegalArgumentException("UserInfoTask requires a token as a parameter.");
 		}
 		String token = params[0];	
 		
@@ -51,7 +52,7 @@ public class UserInfoTask extends AsyncTask<String, Void, Boolean>  {
 	protected void onPostExecute(Boolean result) {
 		
 		if (result) {
-			Intent mainActivityIntent = mActivity.getParentActivityIntent();
+			Intent mainActivityIntent = NavUtils.getParentActivityIntent(mActivity);
 			if (mainActivityIntent != null) {
 				mActivity.startActivity(mainActivityIntent);
 			}

@@ -6,9 +6,9 @@ import edu.mit.media.openpds.client.PersonalDataStore;
 
 public class HttpsArchive implements RemoteFileArchive {
 
-	private PersonalDataStore mPds;
+	private FunfPDS mPds;
 
-	public HttpsArchive(PersonalDataStore pds) {
+	public HttpsArchive(FunfPDS pds) {
 		mPds = pds;
 	}
 

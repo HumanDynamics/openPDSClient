@@ -2,6 +2,8 @@ package edu.mit.media.openpds.client;
 
 import java.util.Map;
 
+import edu.mit.media.funf.util.LogUtil;
+
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -12,6 +14,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.Log;
 
 public class NotificationService extends IntentService {
 
@@ -39,6 +42,8 @@ public class NotificationService extends IntentService {
 					notificationManager.notify(notificationType, notifications.get(notificationType));
 				}
 			}
+		} catch (Exception ex) {
+			Log.e("NotificationService", ex.getMessage());
 		}
 		finally {
 			if (mWakeLock.isHeld()) {

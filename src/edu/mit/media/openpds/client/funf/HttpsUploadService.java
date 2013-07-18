@@ -8,9 +8,9 @@ public class HttpsUploadService extends HttpUploadService {
 
 	@Override
 	protected RemoteFileArchive getRemoteArchive(String name) {
-		PersonalDataStore pds = null;
+		FunfPDS pds = null;
 		try {
-			pds = new PersonalDataStore(this);
+			pds = new FunfPDS(this);
 		} catch (Exception e) {
 		}
 		

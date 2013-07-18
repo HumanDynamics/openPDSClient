@@ -4,16 +4,19 @@ package edu.mit.media.openpds.client.funf;
 import static edu.mit.media.funf.util.AsyncSharedPrefs.async;
 
 
+import com.google.android.gcm.GCMRegistrar;
 // // NOTE: Commented out GCM support
 //import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.JsonElement;
 
 import edu.mit.media.funf.FunfManager;
+import edu.mit.media.funf.config.Configurable;
 import edu.mit.media.funf.json.IJsonObject;
 import edu.mit.media.funf.pipeline.BasicPipeline;
 import edu.mit.media.funf.storage.DatabaseService;
 import edu.mit.media.funf.storage.NameValueDatabaseService;
 import edu.mit.media.funf.storage.UploadService;
+import edu.mit.media.openpds.client.PersonalDataStore;
 import edu.mit.media.openpds.client.R;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -22,42 +25,54 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 //import android.content.IntentSender;
+import android.text.TextUtils;
+import android.util.Log;
 
 public class OpenPDSPipeline extends BasicPipeline {
 
 	public static final String LAST_DATA_UPLOAD = "LAST_DATA_UPLOAD";	
 	private AsyncTask<Void, Void, Void> mRegisterTask;
 	
+	@Configurable
+	private String GCMSenderId = null;
+	
 	@Override
 	public void onCreate(final FunfManager manager) {
 		super.onCreate(manager);	
 		this.manager = manager;	
 		// Handle GCM registration
-		//final PersonalDataStore pds = new PersonalDataStore(manager);
-		
-		mRegisterTask = new AsyncTask<Void,Void,Void>() {
-
-			@Override
-			protected Void doInBackground(Void... params) {
-// // NOTE: commented out GCM support
-//				GCMRegistrar.checkDevice(manager);
-//				GCMRegistrar.checkManifest(manager);
-//				String regId = GCMRegistrar.getRegistrationId(manager);
-//				if (regId.equals("")) {
-//					GCMRegistrar.register(manager, manager.getString(R.string.gcm_sender_id));
-//					// NOTE: don't need to register with server here as the GCMIntentService will handle that
-//				} else if (!GCMRegistrar.isRegisteredOnServer(manager) && !pds.registerGCMDevice(regId)) {
-//					GCMRegistrar.unregister(manager);					
-//				}	
-				return null;
+		if (!TextUtils.isEmpty(GCMSenderId)) {
+			final PersonalDataStore pds;
+			try {
+				pds = new PersonalDataStore(manager);
+			} catch (Exception ex) {
+				Log.e("OpenPDSPipeline", ex.getMessage());
+				return;
 			}
 			
-			protected void onPostExecute(Void result) {
-				mRegisterTask = null;
-			}
-		};
-		
-		mRegisterTask.execute(null, null, null);
+			mRegisterTask = new AsyncTask<Void,Void,Void>() {
+	
+				@Override
+				protected Void doInBackground(Void... params) {
+					GCMRegistrar.checkDevice(manager);
+					GCMRegistrar.checkManifest(manager);
+					String regId = GCMRegistrar.getRegistrationId(manager);
+					if (regId.equals("")) {
+						GCMRegistrar.register(manager, GCMSenderId);
+						// NOTE: don't need to register with server for new registrations here as the GCMIntentService will handle that
+					} else if (!GCMRegistrar.isRegisteredOnServer(manager) && !pds.registerGCMDevice(regId)) {
+						GCMRegistrar.unregister(manager);					
+					}	
+					return null;
+				}
+				
+				protected void onPostExecute(Void result) {
+					mRegisterTask = null;
+				}
+			};
+			
+			mRegisterTask.execute(null, null, null);
+		}
 	}
 	
 	@Override

@@ -4,7 +4,9 @@ import org.json.JSONObject;
 import android.util.Log;
 
 public class UserInfoResponse extends RegistryResponse {	
-
+	private String mUuid;
+	private String mPdsLocation;
+	
 	public UserInfoResponse(JSONObject responseJson) {		
 		try {
 			if (responseJson == null) {
@@ -22,5 +24,21 @@ public class UserInfoResponse extends RegistryResponse {
 			setErrorInfo("MalformedResponse", e.getMessage());
 			Log.e(LOG_TAG, "Error getting user info - " + e.getMessage());
 		}
+	}
+	
+	public String getUUID() {
+		return mUuid;
+	}
+
+	protected void setUUID(String uuid) {
+		this.mUuid = uuid;
+	}
+
+	protected void setPDSLocation(String pdsLocation) {
+		this.mPdsLocation = pdsLocation;
+	}
+	
+	public String getPDSLocation(){
+		return mPdsLocation;
 	}
 }
