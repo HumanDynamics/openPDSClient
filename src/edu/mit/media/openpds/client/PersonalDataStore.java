@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.android.gcm.GCMRegistrar;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import edu.mit.media.funf.util.LogUtil;
@@ -76,6 +77,76 @@ public class PersonalDataStore {
 		return buildAbsoluteApiUrl(mContext.getString(R.string.notification_api_relative_url));
 	}
 	
+	public JSONObject getAnswer(String key) {
+		String answerListUrl = buildAbsoluteApiUrl("/api/personal_data/answer/");
+		HttpGet getAnswerListRequest = new HttpGet(answerListUrl);
+		getAnswerListRequest.addHeader("Content-Type", "application/json");
+		
+		HttpClient client = new DefaultHttpClient();
+		ResponseHandler<String> responseHandler = new BasicResponseHandler();
+		String responseBody = null;
+		
+		try {
+			responseBody = client.execute(getAnswerListRequest, responseHandler);
+		} catch (ClientProtocolException e) {
+	        client.getConnectionManager().shutdown();  
+			return new JSONObject();
+		} catch (IOException e) {
+	        client.getConnectionManager().shutdown();  
+			return new JSONObject();
+		}
+		
+		try {
+			JSONObject responseJson = new JSONObject(responseBody);
+			JSONArray objectsJson = responseJson.getJSONArray("objects");
+			
+			// We're only interested in the first answer, for now - we might want to change this later
+			if (objectsJson.length() > 0) {
+				return objectsJson.getJSONObject(0).getJSONObject("value");
+			}						
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new JSONObject();		
+	}
+	
+	public JSONArray getAnswerList(String key) {
+		String answerListUrl = buildAbsoluteApiUrl("/api/personal_data/answerlist/");
+		HttpGet getAnswerListRequest = new HttpGet(answerListUrl);
+		getAnswerListRequest.addHeader("Content-Type", "application/json");
+		
+		HttpClient client = new DefaultHttpClient();
+		ResponseHandler<String> responseHandler = new BasicResponseHandler();
+		String responseBody = null;
+		
+		try {
+			responseBody = client.execute(getAnswerListRequest, responseHandler);
+		} catch (ClientProtocolException e) {
+	        client.getConnectionManager().shutdown();  
+			return null;
+		} catch (IOException e) {
+	        client.getConnectionManager().shutdown();  
+			return null;
+		}
+		
+		try {
+			JSONObject responseJson = new JSONObject(responseBody);
+			JSONArray objectsJson = responseJson.getJSONArray("objects");
+			
+			// We're only interested in the first answer, for now - we might want to change this later
+			if (objectsJson.length() > 0) {
+				return objectsJson.getJSONObject(0).getJSONArray("value");
+			}						
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new JSONArray();		
+	}
+	
 	/**
 	 * Register this device with GCM on the PDS
 	 * NOTE: this method blocks on server communication - DO NOT RUN IN THE UI THREAD!
@@ -113,10 +184,13 @@ public class PersonalDataStore {
 			HttpClient client = new DefaultHttpClient();
 			response = client.execute(request);
 		} catch (ClientProtocolException e) {
-			Log.w(LogUtil.TAG, "Error saving Pipeline to PDS");
+			Log.w(LogUtil.TAG, "Error posting or putting to PDS.");
 			return false;
 		} catch (IOException e) {
-			Log.w(LogUtil.TAG, "IO Exception saving Pipeline to PDS");
+			Log.w(LogUtil.TAG, "IO Exception posting or putting to PDS.");
+			return false;
+		} catch (Exception e) {
+			Log.w(LogUtil.TAG, "Generic Exception posting or putting to PDS.", e);
 			return false;
 		}
 		

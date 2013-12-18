@@ -84,6 +84,17 @@ public class UserRegistrationTask extends AsyncTask<String, Void, String> {
 			
 			UserInfoTask userInfoTask = new UserInfoTask(mActivity, mPrefs, mRegistryClient);			
 			userInfoTask.execute(token);
-		} 
+			onComplete();
+		} else {
+			onError();
+		}
+	}
+	
+	protected void onComplete() {
+		return;
+	}
+	
+	protected void onError() {
+		return;
 	}
 }

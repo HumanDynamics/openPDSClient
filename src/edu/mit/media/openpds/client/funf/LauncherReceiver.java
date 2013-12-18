@@ -32,6 +32,12 @@ public class LauncherReceiver extends BroadcastReceiver {
 	private static boolean launched = false;
 	
 	public static void launch(Context context) {
+		try {
+			FunfPDS pds = new FunfPDS(context);
+		} catch (Exception ex) {
+			// If we can't construct a PDS, don't collect data just yet.
+			return;
+		}
 		startService(context.getApplicationContext(), FunfManager.class); // Ensure main funf system is running
 		launched = true;
 	}
