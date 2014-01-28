@@ -2,6 +2,8 @@ package edu.mit.media.openpds.client;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 
 public class PreferencesWrapper {
 
@@ -11,7 +13,8 @@ public class PreferencesWrapper {
 	private static final String PREFS_FILE = "TokenPrefs";
 	private static final String REFRESH_TOKEN_KEY = "refreshToken";
 	private static final String EXPIRATION_TIME_KEY = "tokenExpirationTime";
-	
+	private static final String GCM_REG_ID_KEY = "gcmRegId";
+	private static final String APP_VERSION_KEY = "appVersion";
 
 	protected SharedPreferences mPreferences;
 	protected Context mContext;
@@ -59,5 +62,41 @@ public class PreferencesWrapper {
 	
 	public boolean setTokenExpirationTime(long tokenExpirationTime) {
 		return mPreferences.edit().putLong(EXPIRATION_TIME_KEY, tokenExpirationTime).commit();
+	}
+	
+	public boolean setGCMRegistrationId(String gcmRegId) {
+		return mPreferences.edit().putString(GCM_REG_ID_KEY, gcmRegId).commit();
+	}
+	
+	public String getGCMRegistrationId() {
+		return (isSavedAppVersionStale())? null:mPreferences.getString(GCM_REG_ID_KEY, null);	
+	}
+	
+	public boolean saveCurrentAppVersion() { 
+		return mPreferences.edit().putInt(APP_VERSION_KEY, getAppVersion(mContext)).commit();
+	}
+	
+	public int getSavedAppVersion() {
+		return mPreferences.getInt(APP_VERSION_KEY, -1);
+	}
+	
+	public boolean isSavedAppVersionStale() {
+		int savedAppVersion = getSavedAppVersion();
+		
+		return (savedAppVersion < 0 || savedAppVersion != getAppVersion(mContext));
+	}
+	
+	/**
+	 * @return Application's version code from the {@code PackageManager}.
+	 */
+	private static int getAppVersion(Context context) {
+	    try {
+	        PackageInfo packageInfo = context.getPackageManager()
+	                .getPackageInfo(context.getPackageName(), 0);
+	        return packageInfo.versionCode;
+	    } catch (NameNotFoundException e) {
+	        // should never happen
+	        throw new RuntimeException("Could not get package name: " + e);
+	    }
 	}
 }

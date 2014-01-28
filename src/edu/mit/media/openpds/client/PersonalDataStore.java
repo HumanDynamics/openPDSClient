@@ -25,7 +25,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -35,6 +34,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
@@ -164,13 +164,24 @@ public class PersonalDataStore {
 		HttpPost deviceRequest = new HttpPost(deviceUrl);
 		
 		if (postOrPut(deviceRequest, deviceJsonObject.toString())) {
-			GCMRegistrar.setRegisteredOnServer(getContext(), true);
+			storeRegistrationId(regId);
 			return true;
 		}	
 		// If we got this far, and regId is not empty, we succeeded
 		return false;
 	}
-
+	
+	/**
+	 * Stores the registration ID and app versionCode in the application's
+	 * {@code SharedPreferences}.
+	 *
+	 * @param context application's context.
+	 * @param regId registration ID
+	 */
+	private void storeRegistrationId(String regId) {
+		mPrefs.saveCurrentAppVersion();
+		mPrefs.setGCMRegistrationId(regId);
+	}
 	
 	protected boolean postOrPut(HttpEntityEnclosingRequestBase request, String data) {
 		HttpResponse response = null;

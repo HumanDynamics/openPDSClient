@@ -3,8 +3,9 @@ package edu.mit.media.openpds.client.funf;
 
 import static edu.mit.media.funf.util.AsyncSharedPrefs.async;
 
+import java.io.IOException;
 
-import com.google.android.gcm.GCMRegistrar;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 // // NOTE: Commented out GCM support
 //import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.JsonElement;
@@ -17,6 +18,7 @@ import edu.mit.media.funf.storage.DatabaseService;
 import edu.mit.media.funf.storage.NameValueDatabaseService;
 import edu.mit.media.funf.storage.UploadService;
 import edu.mit.media.openpds.client.PersonalDataStore;
+import edu.mit.media.openpds.client.PreferencesWrapper;
 import edu.mit.media.openpds.client.R;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -32,6 +34,7 @@ public class OpenPDSPipeline extends BasicPipeline {
 
 	public static final String LAST_DATA_UPLOAD = "LAST_DATA_UPLOAD";	
 	private AsyncTask<Void, Void, Void> mRegisterTask;
+	private GoogleCloudMessaging mGcm;
 	
 	@Configurable
 	private String GCMSenderId = null;
@@ -54,15 +57,25 @@ public class OpenPDSPipeline extends BasicPipeline {
 	
 				@Override
 				protected Void doInBackground(Void... params) {
-					GCMRegistrar.checkDevice(manager);
-					GCMRegistrar.checkManifest(manager);
-					String regId = GCMRegistrar.getRegistrationId(manager);
-					if (regId.equals("")) {
-						GCMRegistrar.register(manager, GCMSenderId);
-						// NOTE: don't need to register with server for new registrations here as the GCMIntentService will handle that
-					} else if (!GCMRegistrar.isRegisteredOnServer(manager) && !pds.registerGCMDevice(regId)) {
-						GCMRegistrar.unregister(manager);					
-					}	
+					PreferencesWrapper prefs = new PreferencesWrapper(manager);
+					if (mGcm == null) {
+						mGcm = GoogleCloudMessaging.getInstance(manager);
+					}
+					String regId = prefs.getGCMRegistrationId();
+					if (regId == null) {
+						try {
+							regId = mGcm.register(GCMSenderId);
+						} catch (IOException e) {
+							Log.w("OpenPDSPipeline", "GCM registration failed", e);
+						}
+						// NOTE: the following method for registering GCM id on the server returns true if successful, false otherwise...
+						// In the case of a failure, not persisting the regId locally means that we'll automatically retry the next time this service starts
+						// Also - at the moment, we're not persisting app version for anything except GCM id... maybe these two writes should be combined
+						if (pds.registerGCMDevice(regId)) {
+							prefs.setGCMRegistrationId(regId);
+							prefs.saveCurrentAppVersion();
+						}
+					}
 					return null;
 				}
 				
