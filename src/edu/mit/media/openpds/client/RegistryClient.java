@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,8 @@ public class RegistryClient {
 	private static final String TOKEN_URL = "/oauth2/token/";
 	private static final String USERINFO_URL = "/oauth2/userinfo";	
 	private static final String PROFILE_API_URL = "/account/api/v1/profile/";
+	private static final String AUTHORIZATION_URL = "/oauth2/authorize";
+	private static final String SHIBBOLETH_LOGIN_URL = "/Shibboleth.sso/Login";
 	
 	private RegistryConfig mConfig;
 		
@@ -58,12 +61,33 @@ public class RegistryClient {
 		mConfig = new RegistryConfig(url, clientKey, clientSecret, scopes, basicAuth);
 	}
 	
+	public String getShibbolethAuthorizationUrl(String redirectUri) {
+		String authUrl = "";
+		try {
+			authUrl = String.format("%s?client_id=%s&response_type=token&redirect_uri=%s", 
+					RegistryClient.AUTHORIZATION_URL, 
+					mConfig.getClientKey(),
+					URLEncoder.encode(redirectUri, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			Log.e(LOG_TAG, "Error while encoding Registry querystring parameter. Details follow.");
+			Log.e(LOG_TAG, e.getMessage());
+			return "";
+		}
+		
+		return getAbsoluteUrl(RegistryClient.SHIBBOLETH_LOGIN_URL, new BasicNameValuePair("target", authUrl));
+	}
 	
 	private String getAbsoluteUrl(String relativeUrl, NameValuePair... params) {
 		String url = String.format("%s%s?", mConfig.getRegistryUrl(), relativeUrl);
 		
 		for (NameValuePair param : params) {
-			url += String.format("%s=%s&", param.getName(), param.getValue());
+			try {
+				url += String.format("%s=%s&", param.getName(), URLEncoder.encode(param.getValue(), "UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				Log.e(LOG_TAG, "Error while encoding Registry querystring parameter. Details follow.");
+				Log.e(LOG_TAG, e.getMessage());
+				return "";
+			}
 		}
 		
 		return url;
@@ -93,24 +117,41 @@ public class RegistryClient {
 	}
 	
 	/***
-	 * Calls the authorization endpoint on the registry server and parses the response as JSON. 
-	 * The entire JSON is returned in order to allow consumers to handle response fields and errors as they please
+	 * Calls the authorization endpoint on the registry server and parses the response as an AuthorizationResponse.
 	 * @param username The username of the user logging in
 	 * @param password The user's password
-	 * @return A JSONObject representing either a successful OAuth2 authorize response or an authorization error, or null if an exception occurred while processing the response
+	 * @return An AuthorizationResponse representing either a successful OAuth2 authorize response or an authorization error, or null if an exception occurred while processing the response
 	 * @throws IOException Thrown if an error occurred while contacting the server - this typically means the server is having connectivity issues.
 	 */
-	public AuthorizationResponse authorize(String username, String password) throws IOException {
-		
+	public AuthorizationResponse authorize(String username, String password) throws IOException {		
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 					
 		nameValuePairs.add(new BasicNameValuePair("grant_type", "password"));
+		nameValuePairs.add(new BasicNameValuePair("username", username));
+		nameValuePairs.add(new BasicNameValuePair("password", password));
+		
+		return authorize(nameValuePairs);	
+	}
+	
+	/**
+	 * Calls the authorization endpoint on the registry server and parses the response as an AuthorizationResponse
+	 * @param code The authorization code used to contruct the token
+	 * @return An AuthorizationResponse representing either a successful OAuth2 authorize response or an authentication error, or null if an exception occurred while processing the reponse
+	 * @throws IOException Thrown if an error occurred while contacting the serve - this typically means the server or device is having connectivity issues.
+	 */
+	public AuthorizationResponse authorize(String code) throws IOException {
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		
+		nameValuePairs.add(new BasicNameValuePair("grant_type", "authorization_code"));
+		nameValuePairs.add(new BasicNameValuePair("code", code));
+		
+		return authorize(nameValuePairs);	
+	}
+	
+	protected AuthorizationResponse authorize(List<NameValuePair> nameValuePairs) throws IOException {
 		nameValuePairs.add(new BasicNameValuePair("client_id", mConfig.getClientKey()));
 		nameValuePairs.add(new BasicNameValuePair("client_secret", mConfig.getClientSecret()));
 		nameValuePairs.add(new BasicNameValuePair("scope", mConfig.getScopes()));
-		nameValuePairs.add(new BasicNameValuePair("username", username));
-		nameValuePairs.add(new BasicNameValuePair("password", password));
-
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(getAbsoluteUrl(TOKEN_URL));
 		httppost.addHeader("AUTHORIZATION", mConfig.getBasicAuth());
@@ -123,7 +164,7 @@ public class RegistryClient {
 			Log.e(LOG_TAG, e.getMessage());
 		}
 		
-		return null;	
+		return null;
 	}
 	
 	/***

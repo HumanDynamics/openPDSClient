@@ -22,6 +22,19 @@ theme attribute (in the form
 containing a value of this type.
          */
         public static int adSize=0x7f010000;
+        /** 
+    A comma-separated list of the supported ad sizes. The sizes must be one of
+    BANNER, FULL_BANNER, LEADERBOARD, MEDIUM_RECTANGLE, SMART_BANNER,
+    WIDE_SKYSCRAPER, or &lt;width&gt;x&lt;height&gt;.
+    
+         <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static int adSizes=0x7f010001;
         /**  The ad unit ID. 
          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
 <p>This may also be a reference to a resource (in the form
@@ -30,7 +43,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int adUnitId=0x7f010001;
+        public static int adUnitId=0x7f010002;
         /** <p>Must be a floating point value, such as "<code>1.2</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -38,7 +51,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int cameraBearing=0x7f010003;
+        public static int cameraBearing=0x7f010004;
         /** <p>Must be a floating point value, such as "<code>1.2</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -46,7 +59,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int cameraTargetLat=0x7f010004;
+        public static int cameraTargetLat=0x7f010005;
         /** <p>Must be a floating point value, such as "<code>1.2</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -54,7 +67,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int cameraTargetLng=0x7f010005;
+        public static int cameraTargetLng=0x7f010006;
         /** <p>Must be a floating point value, such as "<code>1.2</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -62,7 +75,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int cameraTilt=0x7f010006;
+        public static int cameraTilt=0x7f010007;
         /** <p>Must be a floating point value, such as "<code>1.2</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -70,7 +83,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int cameraZoom=0x7f010007;
+        public static int cameraZoom=0x7f010008;
         /** <p>Must be one of the following constant values.</p>
 <table>
 <colgroup align="left" />
@@ -84,7 +97,7 @@ containing a value of this type.
 <tr><td><code>hybrid</code></td><td>4</td><td></td></tr>
 </table>
          */
-        public static int mapType=0x7f010002;
+        public static int mapType=0x7f010003;
         /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -92,7 +105,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int uiCompass=0x7f010008;
+        public static int uiCompass=0x7f010009;
         /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -100,7 +113,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int uiRotateGestures=0x7f010009;
+        public static int uiRotateGestures=0x7f01000a;
         /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -108,7 +121,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int uiScrollGestures=0x7f01000a;
+        public static int uiScrollGestures=0x7f01000b;
         /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -116,7 +129,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int uiTiltGestures=0x7f01000b;
+        public static int uiTiltGestures=0x7f01000c;
         /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -124,7 +137,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int uiZoomControls=0x7f01000c;
+        public static int uiZoomControls=0x7f01000d;
         /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -132,7 +145,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int uiZoomGestures=0x7f01000d;
+        public static int uiZoomGestures=0x7f01000e;
         /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -140,7 +153,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int useViewLifecycle=0x7f01000e;
+        public static int useViewLifecycle=0x7f01000f;
         /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -148,7 +161,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static int zOrderOnTop=0x7f01000f;
+        public static int zOrderOnTop=0x7f010010;
     }
     public static final class color {
         public static int common_action_bar_splitter=0x7f030009;
@@ -359,13 +372,16 @@ containing a value of this type.
            <tr><th>Attribute</th><th>Description</th></tr>
            <tr><td><code>{@link #AdsAttrs_adSize edu.mit.media.openpds.client:adSize}</code></td><td>
     The size of the ad.</td></tr>
+           <tr><td><code>{@link #AdsAttrs_adSizes edu.mit.media.openpds.client:adSizes}</code></td><td>
+    A comma-separated list of the supported ad sizes.</td></tr>
            <tr><td><code>{@link #AdsAttrs_adUnitId edu.mit.media.openpds.client:adUnitId}</code></td><td> The ad unit ID.</td></tr>
            </table>
            @see #AdsAttrs_adSize
+           @see #AdsAttrs_adSizes
            @see #AdsAttrs_adUnitId
          */
         public static final int[] AdsAttrs = {
-            0x7f010000, 0x7f010001
+            0x7f010000, 0x7f010001, 0x7f010002
         };
         /**
           <p>
@@ -390,6 +406,26 @@ containing a value of this type.
         /**
           <p>
           @attr description
+          
+    A comma-separated list of the supported ad sizes. The sizes must be one of
+    BANNER, FULL_BANNER, LEADERBOARD, MEDIUM_RECTANGLE, SMART_BANNER,
+    WIDE_SKYSCRAPER, or &lt;width&gt;x&lt;height&gt;.
+    
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name edu.mit.media.openpds.client:adSizes
+        */
+        public static final int AdsAttrs_adSizes = 1;
+        /**
+          <p>
+          @attr description
            The ad unit ID. 
 
 
@@ -402,7 +438,7 @@ containing a value of this type.
           <p>This is a private symbol.
           @attr name edu.mit.media.openpds.client:adUnitId
         */
-        public static final int AdsAttrs_adUnitId = 1;
+        public static final int AdsAttrs_adUnitId = 2;
         /** Attributes that can be used with a MapAttrs.
            <p>Includes the following attributes:</p>
            <table>
@@ -440,10 +476,10 @@ containing a value of this type.
            @see #MapAttrs_zOrderOnTop
          */
         public static final int[] MapAttrs = {
-            0x7f010002, 0x7f010003, 0x7f010004, 0x7f010005,
-            0x7f010006, 0x7f010007, 0x7f010008, 0x7f010009,
-            0x7f01000a, 0x7f01000b, 0x7f01000c, 0x7f01000d,
-            0x7f01000e, 0x7f01000f
+            0x7f010003, 0x7f010004, 0x7f010005, 0x7f010006,
+            0x7f010007, 0x7f010008, 0x7f010009, 0x7f01000a,
+            0x7f01000b, 0x7f01000c, 0x7f01000d, 0x7f01000e,
+            0x7f01000f, 0x7f010010
         };
         /**
           <p>This symbol is the offset where the {@link edu.mit.media.openpds.client.R.attr#cameraBearing}

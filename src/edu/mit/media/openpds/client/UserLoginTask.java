@@ -1,6 +1,8 @@
 package edu.mit.media.openpds.client;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -56,9 +58,13 @@ public class UserLoginTask extends AsyncTask<String, Void, String> {
 			} else if (authResponse.success()) {
 				mPrefs.setAccessToken(authResponse.getAccessToken());
 				mPrefs.setRefreshToken(authResponse.getRefreshToken());
-				mPrefs.setTokenExpirationTime(authResponse.getTokenExpirationTime());
+				mPrefs.setTokenExpirationTime(authResponse.getTokenExpirationTime());		
+
+				// Since this is already running asynchronously, let's just call userInfoTask.doInBackground synchronously here...
+				UserInfoTask userInfoTask = new UserInfoTask(mActivity, mPrefs, mRegistryClient);
 				
-				return authResponse.getAccessToken();
+				return userInfoTask.doInBackground(authResponse.getAccessToken())? authResponse.getAccessToken() : null;
+				
 			}			
 		} catch (Exception e) {				
 			showToast("Failed contacting the server. Please try again later.");
@@ -70,12 +76,8 @@ public class UserLoginTask extends AsyncTask<String, Void, String> {
 
 	@Override
 	protected void onPostExecute(final String token) {
-
 		if (token != null) {
 			showToast("Login Successful");
-			
-			UserInfoTask userInfoTask = new UserInfoTask(mActivity, mPrefs, mRegistryClient);			
-			userInfoTask.execute(token);
 			onComplete();
 		} else {
 			onError();
@@ -83,6 +85,12 @@ public class UserLoginTask extends AsyncTask<String, Void, String> {
 	}
 	
 	protected void onComplete() {
+		Intent mainActivityIntent = NavUtils.getParentActivityIntent(mActivity);
+		if (mainActivityIntent != null) {
+			mActivity.startActivity(mainActivityIntent);
+		}
+		mActivity.finish();	
+		
 		return;
 	}
 	

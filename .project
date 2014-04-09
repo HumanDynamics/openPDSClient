@@ -3,6 +3,8 @@
 	<name>OpenPDSClient</name>
 	<comment></comment>
 	<projects>
+		<project>google-play-services_lib</project>
+		<project>newFunf</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

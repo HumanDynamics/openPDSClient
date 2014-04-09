@@ -35,7 +35,7 @@ public class UserRegistrationTask extends AsyncTask<String, Void, String> {
 	@Override
 	protected String doInBackground(String... params)  {
 		if (params.length != 3) {
-			Log.e(LOG_TAG, "UserLoginTask requires username and password as parameters.");
+			Log.e(LOG_TAG, "UserRegistrationTask requires username, password, and name as parameters.");
 			throw new IllegalArgumentException("UserRegistrationTask requires username, password, and name as parameters.");
 		}
 		
@@ -65,8 +65,11 @@ public class UserRegistrationTask extends AsyncTask<String, Void, String> {
 				mPrefs.setAccessToken(authResponse.getAccessToken());
 				mPrefs.setRefreshToken(authResponse.getRefreshToken());
 				mPrefs.setTokenExpirationTime(authResponse.getTokenExpirationTime());
+
+				// This is already running async... call userInfotask synchronously.
+				UserInfoTask userInfoTask = new UserInfoTask(mActivity, mPrefs, mRegistryClient);				
 				
-				return authResponse.getAccessToken();
+				return userInfoTask.doInBackground(authResponse.getAccessToken())? authResponse.getAccessToken() : null;
 			}			
 		} catch (Exception e) {				
 			showToast("Failed contacting the server. Please try again later.");
@@ -80,10 +83,7 @@ public class UserRegistrationTask extends AsyncTask<String, Void, String> {
 	protected void onPostExecute(final String token) {
 
 		if (token != null) {
-			showToast("Login Successful");
-			
-			UserInfoTask userInfoTask = new UserInfoTask(mActivity, mPrefs, mRegistryClient);			
-			userInfoTask.execute(token);
+			showToast("Registration Successful");
 			onComplete();
 		} else {
 			onError();
