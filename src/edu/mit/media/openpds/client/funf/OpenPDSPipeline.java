@@ -36,11 +36,14 @@ public class OpenPDSPipeline extends BasicPipeline {
 	private AsyncTask<Void, Void, Void> mRegisterTask;
 	private GoogleCloudMessaging mGcm;
 	
+	private static final String TAG = "OpenPDSPipeline";
+	
 	@Configurable
 	private String GCMSenderId = null;
 	
 	@Override
 	public void onCreate(final FunfManager manager) {
+		Log.v(TAG, "onCreate");
 		super.onCreate(manager);	
 		this.manager = manager;	
 		// Handle GCM registration
@@ -90,6 +93,8 @@ public class OpenPDSPipeline extends BasicPipeline {
 	
 	@Override
 	public void onRun(String action, JsonElement config) {
+		Log.v(TAG, "onRun");
+		Log.v(TAG, "onRun action: " + action);
 		super.onRun(action, config);
 		if (action.equalsIgnoreCase("archive")) {
 			archiveData();
@@ -111,6 +116,7 @@ public class OpenPDSPipeline extends BasicPipeline {
 	
 	@Override
 	public void onDataReceived(IJsonObject probeConfig, IJsonObject data) {
+		Log.v(TAG, "onDataReceived");
 		super.onDataReceived(probeConfig, data);
 		String probeName = probeConfig.getAsJsonPrimitive("@type").getAsString();//probeConfig.get("@type").toString();
 		long timestamp = data.get("timestamp").getAsLong();
@@ -118,6 +124,10 @@ public class OpenPDSPipeline extends BasicPipeline {
 		storeData(probeName, timestamp, data);
 	}
 		
+	//override this function in the subclass. Clear out pipelines and 
+	//then register the pieline from sqlite tables and the string
+	//every time update settings, destroy pipeline and then re-create
+	//
 	public void updatePipelines() {
 //		new Thread() {
 //			@Override
@@ -132,14 +142,19 @@ public class OpenPDSPipeline extends BasicPipeline {
 //		}.start();
 	}
 	
+	//uncommented
 	public void saveToPDS() { 
-//		new Thread() {
-//			@Override
-//			public void run() {
-//				PDSWrapper pds = new PDSWrapper(manager);
-//				pds.savePipelineConfig(manager.getPipelineName(MainPipelineV4.this), MainPipelineV4.this);
-//			}
-//		}.start();
+		new Thread() {
+			@Override
+			public void run() {
+				try{
+					FunfPDS pds = new FunfPDS(manager);
+					pds.savePipelineConfig(manager.getPipelineName(OpenPDSPipeline.this), OpenPDSPipeline.this);
+				} catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}.start();
 	}
 	
 	private void checkForNotifications() {
@@ -148,6 +163,7 @@ public class OpenPDSPipeline extends BasicPipeline {
 	}
 	
 	private void storeData(String name, long timestamp, IJsonObject data) {
+		Log.v(TAG, "storeData");
 		Bundle b = new Bundle();
 		b.putString(NameValueDatabaseService.DATABASE_NAME_KEY,  manager.getPipelineName(this));
 		b.putLong(NameValueDatabaseService.TIMESTAMP_KEY, timestamp);
@@ -160,13 +176,15 @@ public class OpenPDSPipeline extends BasicPipeline {
 	}
 	
 	public void archiveData() {
+		Log.v(TAG, "archiveData");
 		Intent i = new Intent(manager, getDatabaseServiceClass());
 		i.setAction(DatabaseService.ACTION_ARCHIVE);
 		i.putExtra(DatabaseService.DATABASE_NAME_KEY, manager.getPipelineName(this));
 		manager.startService(i);
 	}
 	
-	public void uploadData() {		
+	public void uploadData() {	
+		Log.v(TAG, "uploadData");
 		archiveData();
 		
 		String archiveName = manager.getPipelineName(this);
