@@ -34,7 +34,7 @@ public class UserRegistrationTask extends AsyncTask<String, Void, String> {
 	
 	@Override
 	protected String doInBackground(String... params)  {
-		if (params.length != 3) {
+		if (params.length < 3 || params.length > 4) {
 			Log.e(LOG_TAG, "UserRegistrationTask requires username, password, and name as parameters.");
 			throw new IllegalArgumentException("UserRegistrationTask requires username, password, and name as parameters.");
 		}
@@ -42,6 +42,11 @@ public class UserRegistrationTask extends AsyncTask<String, Void, String> {
 		String name = params[0];
 		String email = params[1];
 		String password = params[2];
+		String uuid = null;
+		if (params.length == 4) {
+			uuid = params[3];
+		}
+		
 		String[] nameParts = name.split(" ");
 		
 		String firstName = nameParts.length > 0? nameParts[0] : "";
@@ -50,7 +55,7 @@ public class UserRegistrationTask extends AsyncTask<String, Void, String> {
 		AuthorizationResponse authResponse = null;
 		
 		try {
-			authResponse = mRegistryClient.createProfileAndAuthorize(email, password, firstName, lastName);			
+			authResponse = mRegistryClient.createProfileAndAuthorize(email, password, firstName, lastName, uuid);			
 			
 			if (authResponse == null) {
 				showToast("An account with that email already exists.");

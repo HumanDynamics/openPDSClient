@@ -13,7 +13,7 @@ public class HttpsArchive implements RemoteFileArchive {
 	}
 
 	public String getId() {
-		return (mPds == null)? "" : mPds.buildAbsoluteUrl("");
+		return (mPds == null)? "" : mPds.getFunfUploadUrl();
 	}
 
 	public boolean add(File file) {

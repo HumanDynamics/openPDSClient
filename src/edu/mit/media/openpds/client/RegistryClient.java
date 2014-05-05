@@ -25,6 +25,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import com.google.gson.JsonObject;
 
@@ -182,10 +183,14 @@ public class RegistryClient {
 		HttpResponse response = httpClient.execute(httpGet);
 
 		return new UserInfoResponse(getJSON(response));
+	}	
+
+	public AuthorizationResponse createProfileAndAuthorize(String email, String password, String firstName, String lastName) throws IOException {
+		return createProfileAndAuthorize(email, password, firstName, lastName, null);
 	}
 	
-	public AuthorizationResponse createProfileAndAuthorize(String email, String password, String firstName, String lastName) throws IOException {
-		RegistryResponse createProfileResponse = createProfile(email, password, firstName, lastName);
+	public AuthorizationResponse createProfileAndAuthorize(String email, String password, String firstName, String lastName, String uuid) throws IOException {
+		RegistryResponse createProfileResponse = createProfile(email, password, firstName, lastName, uuid);
 		if (!createProfileResponse.success()) {
 			return null;
 		}
@@ -194,6 +199,10 @@ public class RegistryClient {
 	}
 	
 	public RegistryResponse createProfile(String email, String password, String firstName, String lastName) {
+		return createProfile(email, password, firstName, lastName, null);
+	}
+	
+	public RegistryResponse createProfile(String email, String password, String firstName, String lastName, String uuid) {
 		JsonObject user = new JsonObject();
 		user.addProperty("username", email);
 		user.addProperty("email", email);
@@ -202,6 +211,10 @@ public class RegistryClient {
 		user.addProperty("last_name", lastName);
 		JsonObject profile = new JsonObject();
 		profile.add("user", user);
+		
+		if (uuid != null && uuid != "") {
+			profile.addProperty("uuid", uuid);
+		}
 		
 		HttpPost request = new HttpPost(getAbsoluteUrl(PROFILE_API_URL));
 		
