@@ -44,6 +44,7 @@ public class PersonalDataStore {
 
 	protected Context mContext; 
 	protected PreferencesWrapper mPrefs;
+	private static final String TAG = "PersonalDataStore";
 	
 	public PersonalDataStore(Context context) throws Exception {
 		mContext = context;
@@ -60,6 +61,7 @@ public class PersonalDataStore {
 	public String buildAbsoluteUrl(String relativeUrl) {
 		String cleanedUrl = relativeUrl.replace("pds:/", "");
 		String separator = relativeUrl.contains("?")? "&" : "?";
+		Log.v(TAG, mPrefs.getPDSLocation() + ", "  + cleanedUrl);
 		
 		return String.format("%s%s%sbearer_token=%s&datastore_owner=%s", mPrefs.getPDSLocation(), cleanedUrl, separator, mPrefs.getAccessToken(), mPrefs.getUUID());
 	}

@@ -45,6 +45,7 @@ import edu.mit.media.openpds.client.PersonalDataStore;
 public class FunfPDS extends PersonalDataStore {
 
 	private Context mContext;
+	private static final String TAG = "FunfPDS";
 	
 	public FunfPDS(Context context) throws Exception {
 		super(context);
@@ -52,6 +53,7 @@ public class FunfPDS extends PersonalDataStore {
 	}
 	
 	public boolean savePipelineConfig(String name, Pipeline pipeline) {
+		Log.v(TAG, "savePipeline for: " + name + " and pipeline: " + pipeline);
 		String resourceUrl = buildAbsoluteApiUrl("/api/personal_data/funfconfig/");
 		JsonArray pipelinesJsonArray = getPipelinesJsonArray();
 		JsonObject pipelineJsonObject = null;
@@ -84,15 +86,19 @@ public class FunfPDS extends PersonalDataStore {
 	}
 
 	public Map<String, Pipeline> getPipelines() { 
+		Log.v(TAG, "getPipelines");
 		Map<String, Pipeline> pipelines = new HashMap<String, Pipeline>();
 		JsonArray pipelinesJsonArray = getPipelinesJsonArray();		
 		
 		if (pipelinesJsonArray != null) {
+			Log.v(TAG, "pipelinesJsonArray is not null");
 			Gson gson = FunfManager.getGsonBuilder(mContext).create();
 			for (JsonElement pipelineJsonElement : getPipelinesJsonArray()) {
 				try {
 					JsonObject pipelineJsonObject = pipelineJsonElement.getAsJsonObject();
+					Log.v(TAG, "pipelineJsonObject name: " + pipelineJsonObject.has("name"));
 					if (pipelineJsonObject.has("name") && pipelineJsonObject.has("config")) {
+						Log.v(TAG,pipelineJsonObject.get("config").toString());
 						Pipeline pipeline = gson.fromJson(pipelineJsonObject.get("config"), OpenPDSPipeline.class);
 						pipelines.put(pipelineJsonObject.get("name").getAsString(), pipeline);
 					}
@@ -106,6 +112,7 @@ public class FunfPDS extends PersonalDataStore {
 	}
 	
 	protected JsonArray getPipelinesJsonArray() {
+		Log.v(TAG, "getPipelinesJsonArray");
 		HttpGet getPipelinesRequest = new HttpGet(buildAbsoluteApiUrl("/api/personal_data/funfconfig/"));
 		getPipelinesRequest.addHeader("Content-Type", "application/json");		
 		HttpClient client = new DefaultHttpClient();
@@ -176,10 +183,13 @@ public class FunfPDS extends PersonalDataStore {
 	}	
 
 	public String getFunfUploadUrl() {
+		Log.v(TAG, "Funf upload url is:");
+		Log.v(TAG, buildAbsoluteApiUrl("/funf_connector/set_funf_data"));
 		return buildAbsoluteApiUrl("/funf_connector/set_funf_data");
 	}
 	
 	public boolean uploadFunfData(File file) {
+		Log.v(TAG, "uploadFunfData");
 		if (getFunfUploadUrl() == null || getFunfUploadUrl().length() == 0) {
 			return false;
 		}
