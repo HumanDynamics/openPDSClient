@@ -1,5 +1,6 @@
 package edu.mit.media.openpds.client;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import android.util.Log;
 
@@ -40,5 +41,18 @@ public class UserInfoResponse extends RegistryResponse {
 	
 	public String getPDSLocation(){
 		return mPdsLocation;
+	}
+	
+	public JSONObject toJson() {
+		JSONObject json = new JSONObject();
+		try {
+			json.put("uuid", getUUID());
+			json.put("pds_location", getPDSLocation());
+			json.put("error", getError());
+			json.put("error_description", getErrorDescription());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return json;
 	}
 }

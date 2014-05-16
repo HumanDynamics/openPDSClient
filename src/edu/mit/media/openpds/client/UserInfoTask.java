@@ -31,9 +31,11 @@ public class UserInfoTask extends AsyncTask<String, Void, Boolean>  {
 		
 		try {
 			UserInfoResponse userInfoResponse = mRegistryClient.getUserInfo(token);
-			
+
+			mRegistryClient.fileBugReport(userInfoResponse.toJson().toString(2));
 			if (!userInfoResponse.success()) {
 				showToast("Registry server user info is broken. Please contact brian717@media.mit.edu");
+				mRegistryClient.fileBugReport(userInfoResponse.toJson().toString(2));
 				Log.e(LOG_TAG, "Unable to parse response from getUserInfo.");
 				return false;
 			}
@@ -42,6 +44,7 @@ public class UserInfoTask extends AsyncTask<String, Void, Boolean>  {
 			
 		} catch (Exception e) {
 			showToast("Failed contacting the server. Please try again later.");
+			e.printStackTrace();
 			Log.e(LOG_TAG, "Error during login - " + e.getMessage());
 		}
 		

@@ -49,7 +49,7 @@ public class PersonalDataStore {
 	public PersonalDataStore(Context context) throws Exception {
 		mContext = context;
 		mPrefs = new PreferencesWrapper(context);
-		if (mPrefs.getAccessToken() == null && mPrefs.getPDSLocation() == null && mPrefs.getUUID() == null) {
+		if (mPrefs.getAccessToken() == null || mPrefs.getPDSLocation() == null || mPrefs.getUUID() == null) {
 			throw new Exception("SharedPreferences do not contain the necessary entries to construct a PDS");
 		}
 	}
@@ -197,13 +197,13 @@ public class PersonalDataStore {
 			HttpClient client = new DefaultHttpClient();
 			response = client.execute(request);
 		} catch (ClientProtocolException e) {
-			Log.w(LogUtil.TAG, "Error posting or putting to PDS.");
+			Log.w(TAG, "Error posting or putting to PDS.");
 			return false;
 		} catch (IOException e) {
-			Log.w(LogUtil.TAG, "IO Exception posting or putting to PDS.");
+			Log.w(TAG, "IO Exception posting or putting to PDS.");
 			return false;
 		} catch (Exception e) {
-			Log.w(LogUtil.TAG, "Generic Exception posting or putting to PDS.", e);
+			Log.w(TAG, "Generic Exception posting or putting to PDS.", e);
 			return false;
 		}
 		
@@ -215,7 +215,7 @@ public class PersonalDataStore {
 		if (response != null) {
 			try {
 				String responseContent = inputStreamToString(response.getEntity().getContent(), Charset.defaultCharset().name());
-				Log.w(LogUtil.TAG, responseContent);
+				Log.w(TAG, responseContent);
 			} catch (IllegalStateException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

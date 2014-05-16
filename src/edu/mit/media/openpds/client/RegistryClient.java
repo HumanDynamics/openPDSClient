@@ -50,6 +50,7 @@ public class RegistryClient {
 	private static final String PROFILE_API_URL = "/account/api/v1/profile/";
 	private static final String AUTHORIZATION_URL = "/oauth2/authorize";
 	private static final String SHIBBOLETH_LOGIN_URL = "/Shibboleth.sso/Login";
+	private static final String BUG_REPORT_URL = "/bug_report";
 	
 	private RegistryConfig mConfig;
 		
@@ -227,14 +228,19 @@ public class RegistryClient {
 		return response;
 	}
 	
-	protected boolean postOrPut(HttpEntityEnclosingRequestBase request, String data) {
+	public boolean fileBugReport(String errorMessage) {
+		HttpPost bugRequest = new HttpPost(getAbsoluteUrl(BUG_REPORT_URL));
+		return postOrPut(bugRequest, errorMessage);
+	}
+	
+	protected boolean postOrPut(HttpEntityEnclosingRequestBase request, String data, String contentType) {
 		HttpResponse response = null;
 		
 		try {		
 			StringEntity contentEntity = new StringEntity(data);
 			request.setEntity(contentEntity);
 			
-			request.addHeader("Content-Type", "application/json");
+			request.addHeader("Content-Type", contentType);
 			
 			HttpClient client = new DefaultHttpClient();
 			response = client.execute(request);
@@ -267,6 +273,10 @@ public class RegistryClient {
 		}
 		
 		return false;
+	}
+	
+	protected boolean postOrPut(HttpEntityEnclosingRequestBase request, String data) {
+		return this.postOrPut(request, data, "application/json");
 	}
 	
 	
