@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +21,8 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -39,6 +44,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.URLUtil;
 
 public class PersonalDataStore {
 
@@ -71,8 +77,14 @@ public class PersonalDataStore {
 	}
 	
 	protected String buildAbsoluteApiUrl(String relativeUrl) {
-		String separator = relativeUrl.contains("?")? "&" : "?";
-		return String.format("%s%s%sbearer_token=%s&datastore_owner__uuid=%s", mPrefs.getPDSLocation(), relativeUrl, separator, mPrefs.getAccessToken(), mPrefs.getUUID());
+		Uri base = Uri.parse(mPrefs.getPDSLocation());
+		Uri relative = Uri.parse(relativeUrl);
+		Uri.Builder builder = base.buildUpon();
+		builder.appendEncodedPath(relative.getPath());
+		builder.encodedQuery(relative.getQuery());
+		builder.appendQueryParameter("datastore_owner__uuid", mPrefs.getUUID());
+		builder.appendQueryParameter("bearer_token", mPrefs.getAccessToken());
+		return builder.build().toString();
 	}
 	
 	private String getNotificationApiUrl() {
@@ -80,7 +92,7 @@ public class PersonalDataStore {
 	}
 	
 	public JSONObject getAnswer(String key) {
-		String answerListUrl = buildAbsoluteApiUrl("/api/personal_data/answer/");
+		String answerListUrl = buildAbsoluteApiUrl("/api/personal_data/answer/?key="+key);
 		HttpGet getAnswerListRequest = new HttpGet(answerListUrl);
 		getAnswerListRequest.addHeader("Content-Type", "application/json");
 		
@@ -115,7 +127,7 @@ public class PersonalDataStore {
 	}
 	
 	public JSONArray getAnswerList(String key) {
-		String answerListUrl = buildAbsoluteApiUrl("/api/personal_data/answerlist/");
+		String answerListUrl = buildAbsoluteApiUrl("/api/personal_data/answerlist/?key="+key);
 		HttpGet getAnswerListRequest = new HttpGet(answerListUrl);
 		getAnswerListRequest.addHeader("Content-Type", "application/json");
 		
